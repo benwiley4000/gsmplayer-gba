@@ -75,7 +75,7 @@ export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
 CFILES		:=	main.c libgbfs.c gsmcode.iwram.c
 CPPFILES	:=
-SFILES		:=	asm.s 8x16.s
+SFILES		:=
 
 
 #---------------------------------------------------------------------------------
