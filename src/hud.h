@@ -7,7 +7,7 @@
 #include "libgsm.h"
 
 void initHUD();
-void drawHUDFrame(GsmPlaybackTracker* playback, unsigned int nframes);
+void drawHUDFrame(GsmPlaybackTracker* playback);
 
 void dma_memset16(void *dst, unsigned int c16, size_t n);
 

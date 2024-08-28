@@ -22,11 +22,10 @@ int main(void) {
   }
 
   hud_cls();
-  unsigned int nframes = 0;
   while (true) {
     advancePlayback(&playback, &DEFAULT_PLAYBACK_INPUT_MAPPING);
     VBlankIntrWait();
     writeFromPlaybackBuffer(&playback);
-    drawHUDFrame(&playback, nframes++);
+    drawHUDFrame(&playback);
   }
 }

@@ -19,8 +19,7 @@ void initHUD() {
     hud_init();
 }
 
-void drawHUDFrame(GsmPlaybackTracker* playback, unsigned int nframes) {
-    REG_BG0HOFS = nframes;
+void drawHUDFrame(GsmPlaybackTracker* playback) {
     hud_new_song(playback->curr_song_name, playback->cur_song);
     hud_frame(playback, playback->src_pos - playback->src_start_pos);
 }
