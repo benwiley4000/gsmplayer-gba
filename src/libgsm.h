@@ -24,8 +24,6 @@ typedef struct GsmPlaybackInputMapping
   int NEXT_TRACK;
   int SEEK_BACK;
   int SEEK_FORWARD;
-  int VOLUME_UP;
-  int VOLUME_DOWN;
   int TOGGLE_LOCK;
 } GsmPlaybackInputMapping;
 

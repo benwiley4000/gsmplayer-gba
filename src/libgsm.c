@@ -59,8 +59,6 @@ struct GsmPlaybackInputMapping DEFAULT_PLAYBACK_INPUT_MAPPING = {
     .NEXT_TRACK = KEY_RIGHT,
     .SEEK_BACK = KEY_L,
     .SEEK_FORWARD = KEY_R,
-    .VOLUME_UP = KEY_UP,
-    .VOLUME_DOWN = KEY_DOWN,
     .TOGGLE_LOCK = KEY_SELECT,
 };
 
