@@ -13,7 +13,7 @@ extern const char _x16Tiles[2048];  // font
 
 void hud_init(void);
 void hud_new_song(const char *name, unsigned int trackno);
-void hud_frame(int locked, unsigned int t);
+void hud_frame(GsmPlaybackTracker* playback, unsigned int t);
 
 void initHUD() {
     hud_init();
@@ -21,7 +21,8 @@ void initHUD() {
 
 void drawHUDFrame(GsmPlaybackTracker* playback, unsigned int nframes) {
     REG_BG0HOFS = nframes;
-    hud_frame(playback->locked, nframes);
+    hud_new_song(playback->curr_song_name, playback->cur_song);
+    hud_frame(playback, playback->src_pos - playback->src_start_pos);
 }
 
 void dma_memset16(void *dst, unsigned int c16, size_t n) {
@@ -120,11 +121,10 @@ struct HUD_CLOCK
 } hud_clock;
 
 /**
- * @param locked 1 for locked, 0 for not locked
  * @param t offset in bytes from start of sample
  * (at 18157 kHz, 33/160 bytes per sample)
  */
-void hud_frame(int locked, unsigned int t)
+void hud_frame(GsmPlaybackTracker* playback, unsigned int t)
 {
   char line[16];
   char time_bcd[4];
@@ -139,8 +139,8 @@ void hud_frame(int locked, unsigned int t)
     t = 5999;
   decimal_time(time_bcd, t);
 
-  line[0] = (locked & KEY_SELECT) ? 12 : ' ';
-  line[1] = (locked & KEY_START) ? 16 : ' ';
+  line[0] = playback->locked ? 12 : ' ';
+  line[1] = !playback->playing ? 16 : ' ';
   line[2] = ' ';
   line[3] = hud_clock.trackno[0] + '0';
   line[4] = hud_clock.trackno[1] + '0';

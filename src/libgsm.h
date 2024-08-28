@@ -3,6 +3,7 @@
 
 typedef struct GsmPlaybackTracker
 {
+  const unsigned char *src_start_pos;
   const unsigned char *src_pos;
   const unsigned char *src_end;
   unsigned int decode_pos;

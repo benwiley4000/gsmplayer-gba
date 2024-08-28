@@ -170,6 +170,7 @@ void advancePlayback(GsmPlaybackTracker *playback, GsmPlaybackInputMapping *mapp
   {
     gsm_init(&decoder);
     src = gbfs_get_nth_obj(fs, playback->cur_song, playback->curr_song_name, &src_len);
+    playback->src_start_pos = src;
     // If reached by seek, go near end of the track.
     // Otherwise, go to the start.
     if (cmd & mapping->SEEK_BACK)
