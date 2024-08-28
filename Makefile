@@ -73,9 +73,9 @@ export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
 
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
-CFILES		:=	main.c libgbfs.c gsmcode.iwram.c
+CFILES		:=	main.c libgbfs.c gsmcode.iwram.c libgsm.c hud.c
 CPPFILES	:=
-SFILES		:=
+SFILES		:= asm.s 8x16.s
 
 
 #---------------------------------------------------------------------------------

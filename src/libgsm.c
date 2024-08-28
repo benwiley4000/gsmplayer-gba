@@ -1,9 +1,10 @@
+#include <gba_base.h>
+#include <gba_input.h>
 #include <gba_interrupt.h>
 #include <gba_systemcalls.h>
 #include <gba_compression.h>
 #include <gba_dma.h>
 #include <gba_sound.h>
-#include <gba_input.h>
 #include <gba_timers.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -13,17 +14,6 @@
 #include "private.h" /* for sizeof(struct gsm_state) */
 #include "gbfs.h"
 #include "libgsm.h"
-
-#if 0
-#define PROFILE_WAIT_Y(y) \
-  do                      \
-  {                       \
-  } while (REG_VCOUNT != (y))
-#define PROFILE_COLOR(r, g, b) (BG_COLORS[0] = RGB5((r), (g), (b)))
-#else
-#define PROFILE_WAIT_Y(y) ((void)0)
-#define PROFILE_COLOR(r, g, b) ((void)0)
-#endif
 
 // gsmplay.c ////////////////////////////////////////////////////////
 
@@ -63,10 +53,16 @@ void gsm_init(gsm r)
   r->nrp = 40;
 }
 
-void wait4vbl(void)
-{
-  asm volatile("mov r2, #0; swi 0x05" ::: "r0", "r1", "r2", "r3");
-}
+struct GsmPlaybackInputMapping DEFAULT_PLAYBACK_INPUT_MAPPING = {
+    .TOGGLE_PLAY_PAUSE = KEY_A | KEY_B | KEY_START,
+    .PREV_TRACK = KEY_LEFT,
+    .NEXT_TRACK = KEY_RIGHT,
+    .SEEK_BACK = KEY_L,
+    .SEEK_FORWARD = KEY_R,
+    .VOLUME_UP = KEY_UP,
+    .VOLUME_DOWN = KEY_DOWN,
+    .TOGGLE_LOCK = KEY_SELECT,
+};
 
 struct gsm_state decoder;
 const GBFS_FILE *fs;
@@ -88,8 +84,8 @@ int initPlayback(GsmPlaybackTracker *playback)
   playback->last_joy = 0x3ff;
   playback->cur_song = (unsigned int)(-1);
   playback->last_sample = 0;
+  playback->playing = 0;
   playback->locked = 0;
-  playback->nframes = 0;
   return 0;
 }
 
@@ -98,49 +94,45 @@ signed char double_buffers[2][608] __attribute__((aligned(4)));
 
 #define CMD_START_SONG 0x0400
 
-void reset_gba(void) __attribute__((long_call));
+void writeFromPlaybackBuffer(GsmPlaybackTracker *playback) {
+  dsound_switch_buffers(double_buffers[playback->cur_buffer]);
+  playback->cur_buffer = !playback->cur_buffer;
+}
 
-void advancePlayback(GsmPlaybackTracker *playback)
+void advancePlayback(GsmPlaybackTracker *playback, GsmPlaybackInputMapping *mapping)
 {
-
   unsigned short j = (REG_KEYINPUT & 0x3ff) ^ 0x3ff;
-  unsigned short cmd = j & (~playback->last_joy | KEY_R | KEY_L);
+  unsigned short cmd = j & (~playback->last_joy | mapping->SEEK_BACK | mapping->SEEK_FORWARD);
   signed char *dst_pos = double_buffers[playback->cur_buffer];
 
   playback->last_joy = j;
 
-  /*
-        if((j & (KEY_A | KEY_B | KEY_SELECT | KEY_START))
-           == (KEY_A | KEY_B | KEY_SELECT | KEY_START))
-          reset_gba();
-  */
-
-  if (cmd & KEY_SELECT)
+  if (cmd & mapping->TOGGLE_LOCK)
   {
-    playback->locked ^= KEY_SELECT;
+    playback->locked = playback->locked ? 0 : 1;
   }
 
-  if (playback->locked & KEY_SELECT)
+  if (playback->locked)
   {
     cmd = 0;
   }
 
-  if (cmd & KEY_START)
+  if (cmd & mapping->TOGGLE_PLAY_PAUSE)
   {
-    playback->locked ^= KEY_START;
+    playback->playing = playback->playing ? 0 : 1;
   }
 
-  if (cmd & KEY_L)
+  if (cmd & mapping->SEEK_BACK)
   {
     playback->src_pos -= 33 * 50;
     if (playback->src_pos < src)
     {
-      cmd |= KEY_LEFT;
+      cmd |= mapping->PREV_TRACK;
     }
   }
 
   // R button: Skip forward
-  if (cmd & KEY_R)
+  if (cmd & mapping->SEEK_FORWARD)
   {
     playback->src_pos += 33 * 50;
   }
@@ -148,10 +140,10 @@ void advancePlayback(GsmPlaybackTracker *playback)
   // At end of track, proceed to the next
   if (playback->src_pos >= playback->src_end)
   {
-    cmd |= KEY_RIGHT;
+    cmd |= mapping->NEXT_TRACK;
   }
 
-  if (cmd & KEY_RIGHT)
+  if (cmd & mapping->NEXT_TRACK)
   {
     playback->cur_song++;
     if (playback->cur_song >= gbfs_count_objs(fs))
@@ -161,7 +153,7 @@ void advancePlayback(GsmPlaybackTracker *playback)
     cmd |= CMD_START_SONG;
   }
 
-  if (cmd & KEY_LEFT)
+  if (cmd & mapping->PREV_TRACK)
   {
     if (playback->cur_song == 0)
     {
@@ -180,7 +172,7 @@ void advancePlayback(GsmPlaybackTracker *playback)
     src = gbfs_get_nth_obj(fs, playback->cur_song, playback->curr_song_name, &src_len);
     // If reached by seek, go near end of the track.
     // Otherwise, go to the start.
-    if (cmd & KEY_L)
+    if (cmd & mapping->SEEK_BACK)
     {
       playback->src_pos = src + src_len - 33 * 60;
     }
@@ -191,9 +183,7 @@ void advancePlayback(GsmPlaybackTracker *playback)
     playback->src_end = src + src_len;
   }
 
-  PROFILE_WAIT_Y(0);
-
-  if (playback->locked & KEY_START)
+  if (!playback->playing)
   { /* if paused */
     for (j = 304 / 2; j > 0; j--)
     {
@@ -240,11 +230,4 @@ void advancePlayback(GsmPlaybackTracker *playback)
       playback->last_sample = cur_sample;
     }
   }
-
-  PROFILE_COLOR(27, 27, 27);
-
-  dsound_switch_buffers(double_buffers[playback->cur_buffer]);
-  PROFILE_COLOR(27, 31, 27);
-
-  playback->cur_buffer = !playback->cur_buffer;
 }
