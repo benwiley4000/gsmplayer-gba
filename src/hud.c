@@ -71,18 +71,16 @@ void hud_init(void)
   BG_COLORS[0] = RGB5(27, 31, 27);
   BG_COLORS[1] = RGB5(0, 16, 0);
   bitunpack1(PATRAM4(0, 0), _x16Tiles, sizeof(_x16Tiles));
-  REG_DISPCNT = 0;
   REG_BG2CNT = SCREEN_BASE(31) | CHAR_BASE(0);
+}
 
+void showGSMPlayerCopyrightInfo() {
   hud_cls();
   hud_wline(1, "GSM Player for GBA");
   hud_wline(2, "Copr. 2004, 2019");
   hud_wline(3, "Damian Yerrick");
   hud_wline(4, "and Toast contributors");
   hud_wline(5, "(See TOAST-COPYRIGHT.txt)");
-
-  VBlankIntrWait();
-  REG_DISPCNT = 0 | BG2_ON;
 }
 
 /* base 10, 10, 6, 10 conversion */
