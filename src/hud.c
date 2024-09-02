@@ -12,7 +12,6 @@
 extern const char _x16Tiles[2048];  // font
 
 void hud_init(void);
-void hud_new_song(const char *name, unsigned int trackno);
 void hud_frame(GsmPlaybackTracker* playback, unsigned int t);
 
 void initHUD() {
@@ -20,7 +19,6 @@ void initHUD() {
 }
 
 void drawHUDFrame(GsmPlaybackTracker* playback) {
-    hud_new_song(playback->curr_song_name, playback->cur_song);
     hud_frame(playback, playback->src_pos - playback->src_start_pos);
 }
 
@@ -68,14 +66,13 @@ static void hud_wline(unsigned int y, const char *s)
 
 void hud_init(void)
 {
-  BG_COLORS[0] = RGB5(27, 31, 27);
-  BG_COLORS[1] = RGB5(0, 16, 0);
+  BG_COLORS[0] = RGB5(31, 31, 31);
+  BG_COLORS[1] = RGB5(0, 0, 0);
   bitunpack1(PATRAM4(0, 0), _x16Tiles, sizeof(_x16Tiles));
   REG_BG2CNT = SCREEN_BASE(31) | CHAR_BASE(0);
 }
 
 void showGSMPlayerCopyrightInfo() {
-  hud_cls();
   hud_wline(1, "GSM Player for GBA");
   hud_wline(2, "Copr. 2004, 2019");
   hud_wline(3, "Damian Yerrick");
@@ -117,14 +114,39 @@ struct HUD_CLOCK
   unsigned char clock[4];
 } hud_clock;
 
+void hud_show_instructions() {
+  hud_wline(1, "                  Play: A/B\n");
+  hud_wline(2, "                  Seek: L/R\n");
+  hud_wline(3, "                  Skip: DPad\n");
+  hud_wline(4, "                  Lock: Slct\n");
+  hud_wline(5, "                  Info: Strt\n");
+}
+
+void hud_update_clock(unsigned int trackno)
+{
+  int upper;
+  hud_clock.cycles = 0;
+
+  for(upper = 0; upper < 4; upper++)
+    hud_clock.clock[0] = 0;
+  upper = trackno / 10;
+  hud_clock.trackno[1] = trackno - upper * 10;
+
+  trackno = upper;
+  upper = trackno / 10;
+  hud_clock.trackno[0] = trackno - upper * 10;
+}
+
 /**
  * @param t offset in bytes from start of sample
  * (at 18157 kHz, 33/160 bytes per sample)
  */
 void hud_frame(GsmPlaybackTracker* playback, unsigned int t)
 {
-  char line[16];
+  char line[29];
   char time_bcd[4];
+
+  hud_update_clock(playback->cur_song);
 
   /* a fractional value for Seconds Per Byte
      1/33 frame/byte * 160 sample/frame * 924 cpu/sample / 2^24 sec/cpu
@@ -136,36 +158,22 @@ void hud_frame(GsmPlaybackTracker* playback, unsigned int t)
     t = 5999;
   decimal_time(time_bcd, t);
 
-  line[0] = playback->locked ? 12 : ' ';
-  line[1] = !playback->playing ? 16 : ' ';
-  line[2] = ' ';
-  line[3] = hud_clock.trackno[0] + '0';
-  line[4] = hud_clock.trackno[1] + '0';
-  line[5] = ' ';
-  line[6] = ' ';
-  line[7] = time_bcd[0];
-  line[8] = time_bcd[1];
-  line[9] = ':';
-  line[10] = time_bcd[2];
-  line[11] = time_bcd[3];
-  line[12] = '\0';
+  line[0] = !playback->playing ? 16 : 62; // TODO: replace with better symbol
+  line[1] = ' ';
+  line[2] = hud_clock.trackno[0] + '0';
+  line[3] = hud_clock.trackno[1] + '0';
+  line[4] = ' ';
+  for (int i = 0; i < 21 - 5; i++) {
+    line[i + 5] = playback->curr_song_name[i];
+  }
+  line[21] = ' ';
+  line[22] = playback->locked ? 12 : ' ';
+  line[23] = time_bcd[0];
+  line[24] = time_bcd[1];
+  line[25] = ':';
+  line[26] = time_bcd[2];
+  line[27] = time_bcd[3];
+  line[28] = '\0';
+  
   hud_wline(9, line);
-}
-
-void hud_new_song(const char *name, unsigned int trackno)
-{
-  int upper;
-
-  hud_wline(5, "Playing");
-  hud_wline(6, name);
-  hud_clock.cycles = 0;
-
-  for(upper = 0; upper < 4; upper++)
-    hud_clock.clock[0] = 0;
-  upper = trackno / 10;
-  hud_clock.trackno[1] = trackno - upper * 10;
-
-  trackno = upper;
-  upper = trackno / 10;
-  hud_clock.trackno[0] = trackno - upper * 10;
 }

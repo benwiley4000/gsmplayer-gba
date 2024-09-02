@@ -8,6 +8,7 @@
 
 void initHUD();
 void showGSMPlayerCopyrightInfo();
+void hud_show_instructions();
 void drawHUDFrame(GsmPlaybackTracker* playback);
 
 void dma_memset16(void *dst, unsigned int c16, size_t n);

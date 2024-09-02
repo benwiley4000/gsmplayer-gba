@@ -82,7 +82,7 @@ int initPlayback(GsmPlaybackTracker *playback)
   playback->last_joy = 0x3ff;
   playback->cur_song = (unsigned int)(-1);
   playback->last_sample = 0;
-  playback->playing = 0;
+  playback->playing = 1;
   playback->locked = 0;
   return 0;
 }
