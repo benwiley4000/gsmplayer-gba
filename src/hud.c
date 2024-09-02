@@ -163,8 +163,13 @@ void hud_frame(GsmPlaybackTracker* playback, unsigned int t)
   line[2] = hud_clock.trackno[0] + '0';
   line[3] = hud_clock.trackno[1] + '0';
   line[4] = ' ';
+  char curr_char;
+  int done_printing_name = 0;
   for (int i = 0; i < 21 - 5; i++) {
-    line[i + 5] = playback->curr_song_name[i];
+    curr_char = playback->curr_song_name[i];
+    // a cheap way to avoid showing file extensions
+    if (curr_char == '.') done_printing_name = 1;
+    line[i + 5] = done_printing_name ? ' ' : curr_char;
   }
   line[21] = ' ';
   line[22] = playback->locked ? 12 : ' ';
