@@ -5,23 +5,18 @@
 
 #include "art.h"
 
-// extern const unsigned short leopard_16_Palette[16];
-// extern const unsigned char leopard_16_Bitmap[8192];
-extern const unsigned short leopard_256_Palette[256];
-extern const unsigned char leopard_256_Bitmap[16384];
+extern const unsigned short leopard_Palette[256];
+extern const unsigned char leopard_Bitmap[16384];
 
 void initArt()
 {
     // Copy sprite palette and tile data into the appropriate locations
     while (REG_DMA3CNT & DMA_ENABLE)
         VBlankIntrWait();
-    // dmaCopy(leopard_16_Palette, SPRITE_PALETTE, sizeof(leopard_16_Palette));
-    // while (REG_DMA3CNT & DMA_ENABLE) VBlankIntrWait();
-    // dmaCopy(leopard_16_Bitmap, SPRITE_PALETTE, sizeof(leopard_16_Palette));
-    dmaCopy(leopard_256_Palette, SPRITE_PALETTE, sizeof(leopard_256_Palette));
+    dmaCopy(leopard_Palette, SPRITE_PALETTE, sizeof(leopard_Palette));
     while (REG_DMA3CNT & DMA_ENABLE)
         VBlankIntrWait();
-    dmaCopy(leopard_256_Bitmap, SPRITE_GFX, sizeof(leopard_256_Bitmap));
+    dmaCopy(leopard_Bitmap, SPRITE_GFX, sizeof(leopard_Bitmap));
     // wait for vblank so we can access OAM (and also make sure dma copy is done)
     do
     {
@@ -45,6 +40,8 @@ void initArt()
 
 void drawArt(GsmPlaybackTracker *playback)
 {
+    // 4 * 4 * 2 (4 tile width, 4 tile height, x2 for d-tiles)
+    // [because palette256 addresses are 8-bit instead of 4-bit]
     u16 tile_block_size = 32;
 
     for (u16 i = 0; i < 16; i++)
