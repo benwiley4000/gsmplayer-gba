@@ -1,3 +1,35 @@
+# GSM Player Album Art Fork
+
+![Screenshot](screenshot.png)
+
+This project forks GSM Player with some UI revisions, most notably providing a feature
+where arbitrary album artwork can be shown during audio playback. It also provides
+everything needed to easily add .wav files and art and build a new ROM.
+
+Currently the art is loaded once and it's assumed all songs use the same artwork, but
+it wouldn't be too complicated to add support for one-artwork-per-song. Essentially
+the OAM attributes would need to be pointed to a different group of tile addresses
+according to the current song. The math is all there so you'd just need to load
+your bitmap into an address and use that address as an offset for each OAM tile
+address.
+
+### External build dependencies:
+1. Windows (you can make it work elsewhere I'm sure, you just need to rewrite the Go.bat script, and find a copy of Sox that will work or else recreate that part of the script). Many filepaths are hardcoded, you might need to change these.
+2. devkitPro (libgba and gbfs)
+3. ImageMagick (for resizing artwork)
+4. Node.js (for quantizing artwork to 256 colors and arranging in tile format)
+5. Make
+
+### Project setup
+1. Add any .wav files to the wavs/ folder
+2. Add your album art (with a .jpg extension) to the art/ folder. Don't use .jpeg, we're using that for the temporary resized file.
+3. Search the project for "leopard" (in the Makefile and src/art.c) and change it to whatever your artwork jpg file is called. Mine was called leopard.jpg. I could have tried to make this a variable but I decided to make it your problem.
+4. Build the project by running Go.bat. This will create allnewgsm.gba.
+
+You can open allnewgsm.gba in an emulator, or stick it on a flash cart.
+
+## Original Readme
+
 GSM Player
 ==========
 In mid-2004, I ported the GSM RPE-LTP (also called GSM Full Rate)
