@@ -137,7 +137,7 @@ void hud_update_clock(unsigned int trackno)
   hud_clock.trackno[0] = trackno - upper * 10;
 }
 
-const unsigned int printable_max_len = 21 - 5;
+const unsigned int printable_max_len = 20 - 5;
 
 void update_title_marquee(GsmPlaybackTracker *playback)
 {
@@ -178,7 +178,7 @@ void hud_frame(GsmPlaybackTracker* playback, unsigned int t)
     t = 5999;
   decimal_time(time_bcd, t);
 
-  line[0] = !playback->playing ? 16 : 62; // TODO: replace with better symbol
+  line[0] = !playback->playing ? 16 : 17;
   line[1] = ' ';
   line[2] = hud_clock.trackno[0] + '0';
   line[3] = hud_clock.trackno[1] + '0';
@@ -198,8 +198,9 @@ void hud_frame(GsmPlaybackTracker* playback, unsigned int t)
     if (curr_char == '.') done_printing_name = 1;
     line[i + 5] = done_printing_name ? ' ' : curr_char;
   }
-  line[21] = ' ';
-  line[22] = playback->locked ? 12 : ' ';
+  line[20] = ' ';
+  line[21] = playback->locked ? 12 : 13;
+  line[22] = ' ';
   line[23] = time_bcd[0];
   line[24] = time_bcd[1];
   line[25] = ':';
