@@ -14,7 +14,11 @@ typedef struct GsmPlaybackTracker
   int playing;
   int locked;
 
-  char curr_song_name[25];
+  // these vars should be initialized together
+  char curr_song_name[65];
+  unsigned int curr_song_name_len;
+  int marquee_offset;
+  unsigned int frames_until_marquee_update;
 } GsmPlaybackTracker;
 
 typedef struct GsmPlaybackInputMapping

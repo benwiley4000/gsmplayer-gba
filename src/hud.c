@@ -137,6 +137,26 @@ void hud_update_clock(unsigned int trackno)
   hud_clock.trackno[0] = trackno - upper * 10;
 }
 
+const unsigned int printable_max_len = 21 - 5;
+
+void update_title_marquee(GsmPlaybackTracker *playback)
+{
+  if (!--playback->frames_until_marquee_update)
+  {
+    playback->marquee_offset++;
+    if (playback->marquee_offset == playback->curr_song_name_len)
+    {
+      playback->marquee_offset = 0 - printable_max_len;
+    }
+    // wait 3 seconds if marquee has returned to starting
+    // position, otherwise move at 3 fps (30 / 10 = 3)
+    playback->frames_until_marquee_update =
+        playback->marquee_offset == 0
+            ? 90
+            : 10;
+  }
+}
+
 /**
  * @param t offset in bytes from start of sample
  * (at 18157 kHz, 33/160 bytes per sample)
@@ -165,8 +185,15 @@ void hud_frame(GsmPlaybackTracker* playback, unsigned int t)
   line[4] = ' ';
   char curr_char;
   int done_printing_name = 0;
-  for (int i = 0; i < 21 - 5; i++) {
-    curr_char = playback->curr_song_name[i];
+  if (playback->curr_song_name_len > printable_max_len)
+  {
+    update_title_marquee(playback);
+  }
+  int offset = 0;
+  for (int i = 0; i < printable_max_len; i++)
+  {
+    offset = i + playback->marquee_offset;
+    curr_char = offset < 0 ? ' ' : playback->curr_song_name[offset];
     // a cheap way to avoid showing file extensions
     if (curr_char == '.') done_printing_name = 1;
     line[i + 5] = done_printing_name ? ' ' : curr_char;

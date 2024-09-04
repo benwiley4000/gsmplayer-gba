@@ -81,6 +81,7 @@ int initPlayback(GsmPlaybackTracker *playback)
   playback->cur_buffer = 0;
   playback->last_joy = 0x3ff;
   playback->cur_song = (unsigned int)(-1);
+  playback->curr_song_name_len = 0;
   playback->last_sample = 0;
   playback->playing = 1;
   playback->locked = 0;
@@ -169,6 +170,17 @@ void advancePlayback(GsmPlaybackTracker *playback, GsmPlaybackInputMapping *mapp
     gsm_init(&decoder);
     src = gbfs_get_nth_obj(fs, playback->cur_song, playback->curr_song_name, &src_len);
     playback->src_start_pos = src;
+    {
+      unsigned int song_name_len = 0;
+      const unsigned int max_len = sizeof(playback->curr_song_name);
+      while (song_name_len < max_len && playback->curr_song_name[song_name_len] != '.')
+      {
+        song_name_len++;
+      }
+      playback->curr_song_name_len = song_name_len;
+      playback->marquee_offset = 0;
+      playback->frames_until_marquee_update = 90;
+    }
     // If reached by seek, go near end of the track.
     // Otherwise, go to the start.
     if (cmd & mapping->SEEK_BACK)
