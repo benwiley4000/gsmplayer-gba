@@ -166,7 +166,7 @@ void hud_frame(GsmPlaybackTracker* playback, unsigned int t)
   char line[29];
   char time_bcd[4];
 
-  hud_update_clock(playback->cur_song);
+  hud_update_clock(playback->cur_song + 1);
 
   /* a fractional value for Seconds Per Byte
      1/33 frame/byte * 160 sample/frame * 924 cpu/sample / 2^24 sec/cpu
