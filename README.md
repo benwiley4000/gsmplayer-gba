@@ -23,7 +23,7 @@ address.
 1. Windows (you can make it work elsewhere I'm sure, you just need to rewrite the Go.bat script, and find a copy of Sox that will work or else recreate that part of the script). Many filepaths are hardcoded, you might need to change these.
 2. devkitPro (libgba)
 3. ImageMagick (for resizing artwork)
-4. Node.js (for quantizing artwork to 256 colors and arranging in tile format)
+4. Node.js (for quantizing artwork to 256 colors and arranging in tile format). All dependencies are included in the repo, no need to install packages.
 5. Make
 
 ### Project setup
