@@ -33,6 +33,10 @@ You can open allnewgsm.gba in an emulator, or stick it on a flash cart.
 
 The easiest way is to manually pass individual GSM file paths in the desired order to the GBFS executable, rather than using a glob (see GoGBFS.ps1).
 
+#### Can I make the album art look more retro?
+
+In `img2gba/lib-img2gba.js`, change `MAX_COLORS` from 255 to 16.
+
 #### Can I include multiple album artworks?
 
 Currently the art is loaded once and it's assumed all songs use the same artwork, but
