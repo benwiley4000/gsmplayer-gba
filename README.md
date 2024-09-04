@@ -12,13 +12,6 @@ This project forks GSM Player with some UI revisions, most notably providing a f
 where arbitrary album artwork can be shown during audio playback. It also provides
 everything needed to easily add .wav files and art and build a new ROM.
 
-Currently the art is loaded once and it's assumed all songs use the same artwork, but
-it wouldn't be too complicated to add support for one-artwork-per-song. Essentially
-the OAM attributes would need to be pointed to a different group of tile addresses
-according to the current song. The math is all there so you'd just need to load
-your bitmap into an address and use that address as an offset for each OAM tile
-address.
-
 ### External build dependencies:
 1. Windows (you can make it work elsewhere I'm sure, you just need to rewrite the Go.bat script, and find a copy of Sox that will work or else recreate that part of the script). Many filepaths are hardcoded, you might need to change these.
 2. devkitPro (libgba)
@@ -39,6 +32,15 @@ You can open allnewgsm.gba in an emulator, or stick it on a flash cart.
 #### Can I re-order the songs in the playlist?
 
 The easiest way is to manually pass individual GSM file paths in the desired order to the GBFS executable, rather than using a glob (see GoGBFS.ps1).
+
+#### Can I include multiple album artworks?
+
+Currently the art is loaded once and it's assumed all songs use the same artwork, but
+it wouldn't be too complicated to add support for one-artwork-per-song. Essentially
+the OAM attributes would need to be pointed to a different group of tile addresses
+according to the current song. The math is all there so you'd just need to load
+your bitmap into an address and use that address as an offset for each OAM tile
+address.
 
 ## Original Readme
 
