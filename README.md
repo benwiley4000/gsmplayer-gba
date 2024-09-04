@@ -1,5 +1,11 @@
 # GSM Player Album Art Fork
 
+## Original GSM Player UI
+
+![Old screenshot](screenshot-old.png)
+
+## Revised UI
+
 ![Screenshot](screenshot.png)
 
 This project forks GSM Player with some UI revisions, most notably providing a feature
