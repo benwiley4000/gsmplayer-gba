@@ -57,7 +57,7 @@ typedef struct GBFS_FILE
 
 typedef struct GBFS_ENTRY
 {
-  char name[24];     /* filename, nul-padded */
+  char name[64];     /* filename, nul-padded */
   u32  len;          /* length of object in bytes */
   u32  data_offset;  /* in bytes from beginning of file */
 } GBFS_ENTRY;

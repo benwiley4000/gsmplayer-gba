@@ -100,7 +100,7 @@ const void *skip_gbfs_file(const GBFS_FILE *file)
 
 static int namecmp(const void *a, const void *b)
 {
-  return memcmp(a, b, 24);
+  return memcmp(a, b, 64);
 }
 
 
@@ -108,13 +108,13 @@ const void *gbfs_get_obj(const GBFS_FILE *file,
                          const char *name,
                          u32 *len)
 {
-  char key[24] = {0};
+  char key[64] = {0};
 
   const GBFS_ENTRY *dirbase = (const GBFS_ENTRY *)((const char *)file + file->dir_off);
   size_t n_entries = file->dir_nmemb;
   const GBFS_ENTRY *here;
 
-  strncpy(key, name, 24);
+  strncpy(key, name, 64);
 
   here = bsearch(key, dirbase,
                  n_entries, sizeof(GBFS_ENTRY),
@@ -142,8 +142,8 @@ const void *gbfs_get_nth_obj(const GBFS_FILE *file,
 
   if(name)
   {
-    strncpy(name, here->name, 24);
-    name[24] = 0;
+    strncpy(name, here->name, 64);
+    name[64] = 0;
   }
 
   if(len)
