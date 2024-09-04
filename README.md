@@ -36,7 +36,7 @@ You can open allnewgsm.gba in an emulator, or stick it on a flash cart.
 
 ### FAQ
 
-## Can I re-order the songs in the playlist?
+#### Can I re-order the songs in the playlist?
 
 The easiest way is to manually pass individual GSM file paths in the desired order to the GBFS executable, rather than using a glob (see GoGBFS.ps1).
 
