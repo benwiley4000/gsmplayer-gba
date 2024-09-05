@@ -168,6 +168,8 @@ void hud_frame(GsmPlaybackTracker* playback, unsigned int t)
 
   hud_update_clock(playback->cur_song + 1);
 
+  playback->reel_rotation_theta = t * 3;
+
   /* a fractional value for Seconds Per Byte
      1/33 frame/byte * 160 sample/frame * 924 cpu/sample / 2^24 sec/cpu
      * 2^32 fracunits = 1146880 sec/byte fracunits

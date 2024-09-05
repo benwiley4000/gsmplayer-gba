@@ -180,6 +180,7 @@ void advancePlayback(GsmPlaybackTracker *playback, GsmPlaybackInputMapping *mapp
       playback->curr_song_name_len = song_name_len;
       playback->marquee_offset = 0;
       playback->frames_until_marquee_update = 90;
+      playback->reel_rotation_theta = 0;
     }
     // If reached by seek, go near end of the track.
     // Otherwise, go to the start.

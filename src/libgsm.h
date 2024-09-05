@@ -19,6 +19,7 @@ typedef struct GsmPlaybackTracker
   unsigned int curr_song_name_len;
   int marquee_offset;
   unsigned int frames_until_marquee_update;
+  u16 reel_rotation_theta;
 } GsmPlaybackTracker;
 
 typedef struct GsmPlaybackInputMapping

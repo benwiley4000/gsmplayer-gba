@@ -11,7 +11,7 @@ const TILE_WIDTH = 8;
 const TILE_SIZE = TILE_WIDTH * TILE_WIDTH;
 const TILES_PER_BLOCK_ROW = TILE_BLOCK_WIDTH / TILE_WIDTH;
 
-const MAX_COLORS = 255;
+const MAX_COLORS = 16;
 
 /**
  * @param {number[]} data
@@ -27,7 +27,7 @@ function quantizeData(data) {
     const colorMap = quantize(arr, MAX_COLORS);
     const newData = Array(arr.length);
     const paletteMap = new Map([[0, 0]]);
-    let paletteColorIndex = 1;
+    let paletteColorIndex = 0;
     for (let i = 0; i < arr.length; i++) {
         const [r, g, b] = colorMap.map(arr[i]);
         const [r_, g_, b_] = [r, g, b].map(c => c >> 3);
@@ -42,11 +42,9 @@ function quantizeData(data) {
         }
         newData[i] = pIndex;
     }
-    const palette = [...paletteMap.keys()];
-
-    // fill in any empty colors that weren't used
-    for (let i = palette.length; i < 256; i++) {
-        palette[i] = 0;
+    const palette = Array(MAX_COLORS).fill(0);
+    for (const [color, index] of paletteMap) {
+        palette[index] = color;
     }
 
     return { data: newData, palette };
@@ -94,9 +92,17 @@ module.exports = {
             tiledBitmap[i] = canvasData[bitmapToCanvasIndex(i, width)];
         }
 
+        const tiledBitmap4Bit = Array(tiledBitmap.length >> 1);
+        for (let i = 0; i < tiledBitmap4Bit.length; i++) {
+            const srcIndex = i << 1;
+            const combined = (0b1111 & tiledBitmap[srcIndex])
+                | ((0b1111 & tiledBitmap[srcIndex + 1]) << 4);
+            tiledBitmap4Bit[i] = combined;
+        }
+
         return {
             palette,
-            bitmap: tiledBitmap,
+            bitmap: tiledBitmap4Bit,
         }
     }
 }

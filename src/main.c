@@ -63,6 +63,7 @@ int main(void)
     {
       REG_DISPCNT |= OBJ_ON;
       hud_show_instructions();
+      drawArt(&playback);
     }
   }
 }
