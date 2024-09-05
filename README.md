@@ -6,7 +6,7 @@
 
 ## Revised UI
 
-![Screenshot](screenshot.png)
+![Screenshot](screencapture.gif)
 
 This project forks GSM Player with some UI revisions, most notably providing a feature
 where arbitrary album artwork can be shown during audio playback. It also provides
