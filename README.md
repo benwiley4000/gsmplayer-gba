@@ -12,6 +12,14 @@ This project forks GSM Player with some UI revisions, most notably providing a f
 where arbitrary album artwork can be shown during audio playback. It also provides
 everything needed to easily add .wav files and art and build a new ROM.
 
+List of new UI features:
+- Displays album artwork
+- Current track name, number, timestamp condensed into single line at bottom of screen
+- Clear indication of button controls for different functions
+- New icons for play state and unlocked state (previously no icon was shown in these states)
+- Reel-to-reel tape animation follows track progress
+- Hold the Start button to view copyright info for GSM Player
+
 ### External build dependencies:
 1. Windows (you can make it work elsewhere I'm sure, you just need to rewrite the Go.bat script, and find a copy of Sox that will work or else recreate that part of the script). Many filepaths are hardcoded, you might need to change these.
 2. devkitPro (libgba)
