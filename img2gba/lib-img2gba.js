@@ -11,7 +11,9 @@ const TILE_WIDTH = 8;
 const TILE_SIZE = TILE_WIDTH * TILE_WIDTH;
 const TILES_PER_BLOCK_ROW = TILE_BLOCK_WIDTH / TILE_WIDTH;
 
-const MAX_COLORS = 16;
+const PALETTE_SIZE = 256;
+const RESERVED_PALETTE_SIZE = 16;
+const MAX_COLORS = PALETTE_SIZE - RESERVED_PALETTE_SIZE;
 
 /**
  * @param {number[]} data
@@ -27,7 +29,7 @@ function quantizeData(data) {
     const colorMap = quantize(arr, MAX_COLORS);
     const newData = Array(arr.length);
     const paletteMap = new Map([[0, 0]]);
-    let paletteColorIndex = 0;
+    let paletteColorIndex = RESERVED_PALETTE_SIZE;
     for (let i = 0; i < arr.length; i++) {
         const [r, g, b] = colorMap.map(arr[i]);
         const [r_, g_, b_] = [r, g, b].map(c => c >> 3);
@@ -42,7 +44,7 @@ function quantizeData(data) {
         }
         newData[i] = pIndex;
     }
-    const palette = Array(MAX_COLORS).fill(0);
+    const palette = Array(PALETTE_SIZE).fill(0);
     for (const [color, index] of paletteMap) {
         palette[index] = color;
     }
@@ -102,7 +104,8 @@ module.exports = {
 
         return {
             palette,
-            bitmap: tiledBitmap4Bit,
+            // switch to 4 bit if we're using 16 color palettes
+            bitmap: tiledBitmap,
         }
     }
 }
