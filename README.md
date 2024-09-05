@@ -15,6 +15,7 @@ everything needed to easily add .wav files and art and build a new ROM.
 List of new UI features:
 - Displays album artwork
 - Current track name, number, timestamp condensed into single line at bottom of screen
+- Marquee scrolling animation for long track names
 - Clear indication of button controls for different functions
 - New icons for play state and unlocked state (previously no icon was shown in these states)
 - Reel-to-reel tape animation follows track progress
@@ -24,7 +25,7 @@ List of new UI features:
 1. Windows (you can make it work elsewhere I'm sure, you just need to rewrite the Go.bat script, and find a copy of Sox that will work or else recreate that part of the script). Many filepaths are hardcoded, you might need to change these.
 2. devkitPro (libgba)
 3. ImageMagick (for resizing artwork)
-4. Node.js (for quantizing artwork to 256 colors and arranging in tile format). All dependencies are included in the repo, no need to install packages.
+4. Node.js (for quantizing artwork to 240 colors and arranging in tile format). All dependencies are included in the repo, no need to install packages.
 5. Make
 
 ### Project setup
@@ -48,11 +49,10 @@ In `img2gba/lib-img2gba.js`, change `MAX_COLORS` from 255 to 16.
 #### Can I include multiple album artworks?
 
 Currently the art is loaded once and it's assumed all songs use the same artwork, but
-it wouldn't be too complicated to add support for one-artwork-per-song. Essentially
-the OAM attributes would need to be pointed to a different group of tile addresses
-according to the current song. The math is all there so you'd just need to load
-your bitmap into an address and use that address as an offset for each OAM tile
-address.
+it wouldn't be too complicated to add support for one-artwork-per-song. Basically:
+- The palette and album artwork tile data would need to be rewritten to match the new selected artwork whenever a song changes. All you need to do is reference different vars for the different data sources. The rest of the logic remains the same.
+- The black and white palette for the reel-to-reel animation will also need to be re-written after updating the album art palette.
+- The OAM attributes will remain the same, pointing to the changed tile data.
 
 ## Original Readme
 
