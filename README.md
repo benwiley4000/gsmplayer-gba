@@ -55,6 +55,14 @@ it wouldn't be too complicated to add support for one-artwork-per-song. Basicall
 - The black and white palette for the reel-to-reel animation will also need to be re-written after updating the album art palette.
 - The OAM attributes will remain the same, pointing to the changed tile data.
 
+### THANK YOU
+
+I want to thank Damian Yerrick for developing the GSM implementation for GBA and the original GSM player, as well as for porting it to modern devkitARM. This is really the best open source implementation of PCM music playback that I could find on the GBA.
+
+I want to also thank Jasper Vijn and other contributors to the TONC tutorial for Game Boy Advance programming. I was new to this and I ran into several obstacles along the way. Without fail, the answer was somewhere in that guide each time.
+
+P.S. I recommend accessing TONC at [this link](https://gbadev.net/tonc/) and choosing the option to print the whole document as a PDF! Will come in handy when you need to search for something, or if you're on the go.
+
 ## Original Readme
 
 GSM Player
