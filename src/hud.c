@@ -78,9 +78,7 @@ void showGSMPlayerCopyrightInfo() {
   hud_wline(2, albumName);
   hud_wline(3, "");
   hud_wline(4, "GSM Player for GBA");
-  char copyrightLine[] = "C 2004, 2019 Damian Yerrick";
-  copyrightLine[0] = 28; // this is where I put the copyright symbol
-  hud_wline(5, copyrightLine);
+  hud_wline(5, "(C) 2004,2019 Damian Yerrick");
   hud_wline(6, "and Toast contributors");
   hud_wline(7, "(See TOAST-COPYRIGHT.txt)");
   hud_wline(8, "");
