@@ -15,6 +15,7 @@ everything needed to easily add .wav files and art and build a new ROM.
 List of new UI features:
 - Displays album artwork
 - Current track name, number, timestamp condensed into single line at bottom of screen
+- Supports track names up to 64 characters via forked version of GBFS (previous limit was 24 characters)
 - Marquee scrolling animation for long track names
 - Clear indication of button controls for different functions
 - New icons for play state and unlocked state (previously no icon was shown in these states)
