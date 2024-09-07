@@ -46,7 +46,9 @@ The easiest way is to manually pass individual GSM file paths in the desired ord
 
 #### Can I make the album art look more retro?
 
-In `img2gba/lib-img2gba.js`, change `MAX_COLORS` from 255 to 16.
+In `img2gba/lib-img2gba.js`, change `MAX_COLORS` from the computed size (which will be 240 normally) to a hardcoded `16`. If that's too low, you can play with the value.
+
+In `img2gba/lib-img2gba.js`, change `MAX_COLORS` from the computed size (which will be 240 normally) to a hardcoded `16`. If that's too low, you can play with the value.
 
 #### Can I include multiple album artworks?
 
