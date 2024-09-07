@@ -5,11 +5,8 @@ const R_SHIFT = 0;
 const G_SHIFT = 5;
 const B_SHIFT = 10;
 
-const TILE_BLOCK_WIDTH = 32;
-const TILE_BLOCK_SIZE = TILE_BLOCK_WIDTH * TILE_BLOCK_WIDTH;
 const TILE_WIDTH = 8;
 const TILE_SIZE = TILE_WIDTH * TILE_WIDTH;
-const TILES_PER_BLOCK_ROW = TILE_BLOCK_WIDTH / TILE_WIDTH;
 
 const PALETTE_SIZE = 256;
 const RESERVED_PALETTE_SIZE = 16;
@@ -56,21 +53,24 @@ function quantizeData(data) {
  * @param {number} bitmapIndex
  * @param {number} canvasWidth
  */
-function bitmapToCanvasIndex(bitmapIndex, canvasWidth) {
-    const tileBlocksPerCanvasRow = canvasWidth / TILE_BLOCK_WIDTH;
+function bitmapToCanvasIndex(bitmapIndex, canvasWidth, blockWidth) {
+    const blockSize = blockWidth * blockWidth;
+    const tilesPerBlockRow = blockWidth / TILE_WIDTH;
 
-    const blockIndex = Math.floor(bitmapIndex / TILE_BLOCK_SIZE);
-    const tileIndex = Math.floor((bitmapIndex % TILE_BLOCK_SIZE) / TILE_SIZE);
+    const tileBlocksPerCanvasRow = canvasWidth / blockWidth;
+
+    const blockIndex = Math.floor(bitmapIndex / blockSize);
+    const tileIndex = Math.floor((bitmapIndex % blockSize) / TILE_SIZE);
     const pixelY = Math.floor((bitmapIndex % TILE_SIZE) / TILE_WIDTH);
     const pixelX = Math.floor(bitmapIndex % TILE_WIDTH);
 
     const blockX = blockIndex % tileBlocksPerCanvasRow;
     const blockY = Math.floor(blockIndex / tileBlocksPerCanvasRow);
-    const tileX = tileIndex % TILES_PER_BLOCK_ROW;
-    const tileY = Math.floor(tileIndex / TILES_PER_BLOCK_ROW);
+    const tileX = tileIndex % tilesPerBlockRow;
+    const tileY = Math.floor(tileIndex / tilesPerBlockRow);
 
-    const x = blockX * TILE_BLOCK_WIDTH + tileX * TILE_WIDTH + pixelX;
-    const y = blockY * TILE_BLOCK_WIDTH + tileY * TILE_WIDTH + pixelY;
+    const x = blockX * blockWidth + tileX * TILE_WIDTH + pixelX;
+    const y = blockY * blockWidth + tileY * TILE_WIDTH + pixelY;
 
     return y * canvasWidth + x;
 }
@@ -80,18 +80,19 @@ module.exports = {
      * @param {number[]} data
      * @param {number} width
      * @param {number} height
+     * @param {number} blockSize
      * @returns {{ palette: number[], bitmap: number[] }}
      */
-    img2Gba(data, width, height) {
-        if (width % TILE_BLOCK_WIDTH || height % TILE_BLOCK_WIDTH) {
-            throw new Error('Image width and height must be multiples of 32px');
+    img2Gba(data, width, height, blockSize) {
+        if (width % blockSize || height % blockSize) {
+            throw new Error('Image width and height must be multiples of block size');
         }
 
         const { palette, data: canvasData } = quantizeData(data);
 
         const tiledBitmap = Array(canvasData.length);
         for (let i = 0; i < tiledBitmap.length; i++) {
-            tiledBitmap[i] = canvasData[bitmapToCanvasIndex(i, width)];
+            tiledBitmap[i] = canvasData[bitmapToCanvasIndex(i, width, blockSize)];
         }
 
         const tiledBitmap4Bit = Array(tiledBitmap.length >> 1);
@@ -107,5 +108,5 @@ module.exports = {
             // switch to 4 bit if we're using 16 color palettes
             bitmap: tiledBitmap,
         }
-    }
+    },
 }

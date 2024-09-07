@@ -25,19 +25,25 @@ int main(void)
   irqEnable(IRQ_VBLANK);
 
   // Hide everything
-  REG_DISPCNT = 0;
+  // And set to Mode 1 (BG 1+2 regular, BG 3 affine)
+  REG_DISPCNT = MODE_1;
 
-  // Unpack font data and setup BG2 for HUD
-  initHUD();
+  // NOTE: art should be initialized before HUD,
+  // because art will fill BG and sprite palettes,
+  // and HUD will overwrite beginning of BG palette
+  // afterward.
 
   // Prepare art
   initArt();
   // (we can enable because all sprites are still hidden)
   REG_DISPCNT |= OBJ_ON | OBJ_1D_MAP;
 
-  // Display BG2 (HUD) on next VBlank
+  // Unpack font data and setup BG1 for HUD
+  initHUD();
+
+  // Display BG1 (HUD) and BG2 (album art background) on next VBlank
   VBlankIntrWait();
-  REG_DISPCNT |= BG2_ON;
+  REG_DISPCNT |= BG1_ON | BG2_ON;
 
   GsmPlaybackTracker playback;
 

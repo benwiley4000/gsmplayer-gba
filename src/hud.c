@@ -69,7 +69,7 @@ void hud_init(void)
   BG_COLORS[0] = RGB5(31, 31, 31);
   BG_COLORS[1] = RGB5(0, 0, 0);
   bitunpack1(PATRAM4(0, 0), _x16Tiles, sizeof(_x16Tiles));
-  REG_BG2CNT = SCREEN_BASE(31) | CHAR_BASE(0);
+  REG_BG1CNT = SCREEN_BASE(31) | CHAR_BASE(0);
 }
 
 void showGSMPlayerCopyrightInfo() {
