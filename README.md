@@ -51,8 +51,8 @@ In `img2gba/lib-img2gba.js`, change `MAX_COLORS` from 255 to 16.
 
 Currently the art is loaded once and it's assumed all songs use the same artwork, but
 it wouldn't be too complicated to add support for one-artwork-per-song. Basically:
-- The palette and album artwork tile data would need to be rewritten to match the new selected artwork whenever a song changes. All you need to do is reference different vars for the different data sources and perform a DMA copy when needed. The rest of the logic remains the same. Note that currently we store the art in two places, one as a background and one as sprites. Both areas wpuld need to be rewrittem, although the sprite image could be reimplemented using the background data to optimize things.
-- The black and white palette for the reel-to-reel animation will also need to be re-written after updating the album art palette.
+- The palette and album artwork tile data would need to be rewritten to match the new selected artwork whenever a song changes bia DMA copy. All you need to do is reference different vars for the different data sources. Note that this currently wpuld need to be done twice, once for the background and once for the sprites. The sprites could be re-inplemented as a background to save cartridge space.
+- The grey and white palette for the reel-to-reel animation will also need to be re-written after updating the album art palette.
 - The OAM attributes will remain the same, pointing to the changed tile data.
 
 ### THANK YOU
