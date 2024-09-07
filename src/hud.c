@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <string.h>  // for memset
 
+#include "album_info.h"
 #include "hud.h"
 
 extern const char _x16Tiles[2048];  // font
@@ -73,11 +74,16 @@ void hud_init(void)
 }
 
 void showGSMPlayerCopyrightInfo() {
-  hud_wline(1, "GSM Player for GBA");
-  hud_wline(2, "Copr. 2004, 2019");
-  hud_wline(3, "Damian Yerrick");
-  hud_wline(4, "and Toast contributors");
-  hud_wline(5, "(See TOAST-COPYRIGHT.txt)");
+  hud_wline(1, artistName);
+  hud_wline(2, albumName);
+  hud_wline(3, "");
+  hud_wline(4, "GSM Player for GBA");
+  char copyrightLine[] = "C 2004, 2019 Damian Yerrick";
+  copyrightLine[0] = 28; // this is where I put the copyright symbol
+  hud_wline(5, copyrightLine);
+  hud_wline(6, "and Toast contributors");
+  hud_wline(7, "(See TOAST-COPYRIGHT.txt)");
+  hud_wline(8, "");
 }
 
 /* base 10, 10, 6, 10 conversion */
@@ -120,6 +126,8 @@ void hud_show_instructions() {
   hud_wline(3, "                  Skip: DPad\n");
   hud_wline(4, "                  Lock: Slct\n");
   hud_wline(5, "                  Info: Strt\n");
+  hud_wline(6, "");
+  hud_wline(7, "");
 }
 
 void hud_update_clock(unsigned int trackno)

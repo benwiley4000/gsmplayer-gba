@@ -33,7 +33,8 @@ List of new UI features:
 1. Add any .wav files to the wavs/ folder
 2. Add your album art (with a .jpg extension) to the art/ folder. Don't use .jpeg, we're using that for the temporary resized file.
 3. Search the project for "leopard" (in the Makefile and src/art.c) and change it to whatever your artwork jpg file is called. Mine was called leopard.jpg. I could have tried to make this a variable but I decided to make it your problem.
-4. Build the project by running Go.bat. This will create allnewgsm.gba.
+4. Change the album name and artist name in src/album_info.h.
+5. Build the project by running Go.bat. This will create allnewgsm.gba.
 
 You can open allnewgsm.gba in an emulator, or stick it on a flash cart.
 
