@@ -48,7 +48,7 @@ The easiest way is to manually pass individual GSM file paths in the desired ord
 
 In `img2gba/lib-img2gba.js`, change `MAX_COLORS` from the computed size (which will be 240 normally) to a hardcoded `16`. If that's too low, you can play with the value.
 
-In `img2gba/lib-img2gba.js`, change `MAX_COLORS` from the computed size (which will be 240 normally) to a hardcoded `16`. If that's too low, you can play with the value.
+Note that regardless of how you set MAX_COLORS, the album art will render in 256 color mode. We are reserving the first 16 colors in each palette for "system use" (text, reel animation) so that's why we cap the color count at 240 normally.
 
 #### Can I include multiple album artworks?
 
