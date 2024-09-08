@@ -52,11 +52,10 @@ Note that regardless of how you set MAX_COLORS, the album art will render in 256
 
 #### Can I include multiple album artworks?
 
-Currently the art is loaded once and it's assumed all songs use the same artwork, but
-it wouldn't be too complicated to add support for one-artwork-per-song. Basically:
-- The palette and album artwork tile data would need to be rewritten to match the new selected artwork whenever a song changes bia DMA copy. All you need to do is reference different vars for the different data sources. Note that this currently wpuld need to be done twice, once for the background and once for the sprites. The sprites could be re-inplemented as a background to save cartridge space.
-- The grey and white palette for the reel-to-reel animation will also need to be re-written after updating the album art palette.
-- The OAM attributes will remain the same, pointing to the changed tile data.
+Currently the art is loaded once and it's assumed all songs use the same artwork, but it wouldn't be too complicated to add support for one-artwork-per-song. Basically:
+- The palette and album artwork tile data would need to be rewritten to match the new selected artwork whenever a song changes via DMA copy. All you need to do is reference different vars for the different data sources.
+- The black and white palette for the font would also need to be rewritten after the art palette change.
+- The background tilemap is already set up to point at the right tiles, so no changes to the tilemap are needed.
 
 ### THANK YOU
 

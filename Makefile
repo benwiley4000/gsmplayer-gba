@@ -73,7 +73,7 @@ export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
 
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
-CFILES		:=	main.c libgbfs.c gsmcode.iwram.c libgsm.c hud.c art.c leopard.pal.c leopard.raw.c leopard_BG.pal.c leopard_BG.raw.c
+CFILES		:=	main.c libgbfs.c gsmcode.iwram.c libgsm.c hud.c art.c reel_animation.c leopard.pal.c leopard.raw.c
 CPPFILES	:=
 SFILES		:= asm.s 8x16.s reel.s
 

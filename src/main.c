@@ -6,6 +6,7 @@
 #include "libgsm.h"
 #include "hud.h"
 #include "art.h"
+#include "reel_animation.h"
 
 struct GsmPlaybackInputMapping InputMapping = {
     .TOGGLE_PLAY_PAUSE = KEY_A | KEY_B,
@@ -28,22 +29,28 @@ int main(void)
   // And set to Mode 1 (BG 1+2 regular, BG 3 affine)
   REG_DISPCNT = MODE_1;
 
-  // NOTE: art should be initialized before HUD,
-  // because art will fill BG and sprite palettes,
-  // and HUD will overwrite beginning of BG palette
-  // afterward.
+  // NOTE: Art should be initialized
+  // the rest, because it writes the background palette,
+  // and other steps override the beginning of the palette
 
   // Prepare art
   initArt();
+
+  // Prepare reel animation
+  initReelAnimation();
   // (we can enable because all sprites are still hidden)
   REG_DISPCNT |= OBJ_ON | OBJ_1D_MAP;
 
   // Unpack font data and setup BG1 for HUD
   initHUD();
 
-  // Display BG1 (HUD) and BG2 (album art background) on next VBlank
+  // Display:
+  // - BG1 (HUD)
+  // - BG2 (album art background)
+  // - BG0 (album art foreground)
+  // on next VBlank
   VBlankIntrWait();
-  REG_DISPCNT |= BG1_ON | BG2_ON;
+  REG_DISPCNT |= BG1_ON | BG2_ON | BG0_ON;
 
   GsmPlaybackTracker playback;
 
@@ -52,7 +59,6 @@ int main(void)
     return 1;
   }
 
-  drawArt(&playback);
   hud_cls();
   while (true)
   {
@@ -62,14 +68,14 @@ int main(void)
     drawHUDFrame(&playback);
     if (!(REG_KEYINPUT & TOGGLE_INFO))
     {
-      REG_DISPCNT &= ~OBJ_ON;
+      REG_DISPCNT &= ~(OBJ_ON | BG0_ON);
       showGSMPlayerCopyrightInfo();
     }
     else
     {
-      REG_DISPCNT |= OBJ_ON;
+      REG_DISPCNT |= OBJ_ON | BG0_ON;
       hud_show_instructions();
-      drawArt(&playback);
+      drawReelAnimation(&playback);
     }
   }
 }

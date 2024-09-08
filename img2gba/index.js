@@ -19,22 +19,24 @@ const { data, width, height } = jpegDecode(imgData);
 const lastSlashIndex = Math.max(imgPath.lastIndexOf('/'), imgPath.lastIndexOf('\\'));
 const imgName = imgPath.slice(lastSlashIndex + 1).replace(/\.jpeg$/, '');
 
-for (const [currentName, blockSize] of [[imgName, 32], [`${imgName}_BG`, 8]]) {
-    const { palette, bitmap } = img2Gba(data, width, height, blockSize);
+// Would be 32 for sprites, but we're just gonna generate
+// a tilemap and render as a background
+const blockSize = 8;
 
-    const palettePath = path.join(outDir, `${currentName}.pal.c`);
-    const bitmapPath = path.join(outDir, `${currentName}.raw.c`);
-    
-    fs.writeFileSync(palettePath, `
-    extern const unsigned short ${currentName}_Palette[${palette.length}] = {
-        ${palette.map(p => `0x${p.toString(16).padStart(4, '0')}`).join(', ')}
-    };
-    `);
-    
-    
-    fs.writeFileSync(bitmapPath, `
-    extern const unsigned char ${currentName}_Bitmap[${bitmap.length}] = {
-        ${bitmap.map(b => `0x${b.toString(16).padStart(2, '0')}`).join(', ')}
-    };
-    `);
-}
+const { palette, bitmap } = img2Gba(data, width, height, blockSize);
+
+const palettePath = path.join(outDir, `${imgName}.pal.c`);
+const bitmapPath = path.join(outDir, `${imgName}.raw.c`);
+
+fs.writeFileSync(palettePath, `
+extern const unsigned short ${imgName}_Palette[${palette.length}] = {
+    ${palette.map(p => `0x${p.toString(16).padStart(4, '0')}`).join(', ')}
+};
+`);
+
+
+fs.writeFileSync(bitmapPath, `
+extern const unsigned char ${imgName}_Bitmap[${bitmap.length}] = {
+    ${bitmap.map(b => `0x${b.toString(16).padStart(2, '0')}`).join(', ')}
+};
+`);

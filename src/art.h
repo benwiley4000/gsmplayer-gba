@@ -4,6 +4,7 @@
 #include "libgsm.h"
 
 void initArt();
-void drawArt(GsmPlaybackTracker* playback);
+// TODO: add a setArt function based on playback
+// if we want to have an art playlist
 
 #endif
